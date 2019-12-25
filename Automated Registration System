@@ -1,0 +1,202 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#define AdminName "stranger"
+#define AdminPassword "54321"
+void teacher_student_selection();
+void student();
+void student_login();
+void student_registration();
+void teacher_login();
+void welcome_student(char);
+void welcome_teacher(char);
+addStudentRecord();
+modifyStudentRecord();
+removeStudentRecord();
+showRecord();
+struct student_Info{
+char firstname[40];
+char lastname[40];
+char id[20];
+char admissionDate[25];
+char program[60];
+char mail[20];
+int contact;
+char birthdaydDate[40];
+char presentAdd[80];
+char permanentAdd[80];
+char username[20];
+char password[10];
+}student_info;
+FILE *stu_data;
+void main()
+{
+printf("\n\n\t\t\tDaffodil International University");
+printf("\n\t\t\t Software Engineering");
+printf("\n\t\t\t******************************************");
+printf("\n\t\t\t******************************************\n\n\n");
+teacher_student_selection();
+}
+void teacher_student_selection(){
+int choice;
+printf ("\n\t\t\t\tA. --->>Teacher\n");
+printf ("\n\t\t\t\tB. --->>Student\n");
+printf ("\n\n\t\t\t\t Enter Your Choice : ");
+scanf("%d",&choice);
+if(choice==1) teacher_login();
+else if(choice==2) student();
+else teacher_student_selection ();
+}
+void teacher_login(){
+system ("cls");
+char x,username[8],pass[5];
+int i;
+printf ("\n\t\t\t\tLog in your account using your spacic
+keywords\n");
+wrong_trial:
+printf ("\n\t\t\t\tUsername: ");
+gets (username);
+printf ("\n\t\t\t\tPassword: ");
+for (i=0;i<5;i++)
+{ x = getch ();
+pass[i] = x;
+printf ("*");
+}
+if(strcmp(username, AdminName) == 0 && strcmp(pass,
+AdminPassword)
+== 0) welcome();
+else {
+printf("\n\t\t\t\tWrong Username or Password. Try again.\n");
+goto wrong_trial;
+}
+}
+void student (){
+int choice;
+printf ("\n\t\t\t\t--->>Log in an account(1)\n");
+printf ("\n\t\t\t\t--->>Sign up an account(2)\n");
+printf ("\n\n\t\t\t\tYour Choice Please: ");
+scanf ("%d", &choice);
+if(choice==1) student_login ();
+else if(choice==2) student_registration();
+else {
+student();
+printf ("\n\n\t\t\t\tPress 0 to go to main menu::: ");
+int start_the_project=getch();
+if(start_the_project==0) main();
+else exit(0);
+}
+}
+void student_registration(){
+system("cls");
+int index, check=0;
+char testUser[20], testPass[10], retype_pass[10];
+retry:
+printf("\n\n\t\t\t\tFill all the information to register you...\n");
+FILE *fp;
+stu_data=fopen("info.txt","ab+");
+if(stu_data==NULL){
+printf("\n\t\t\tFile not found!!!\n");
+exit(1);
+}
+getchar();
+printf("\n\t\t\tFirst Name: ");
+gets(student_info.firstname);
+printf("\n\t\t\tLast Name: ");
+gets(student_info.lastname);
+printf("\n\t\t\tId No: ");
+gets(student_info.id);
+printf("\n\t\t\tAdmission Date: ");
+gets(student_info.admissionDate);
+printf("\n\t\t\tProgram: ");
+gets(student_info.program);
+printf("\n\t\t\tUniversity Mail: ");
+gets(student_info.mail);
+printf("\n\t\t\tContact No: ");
+scanf("%d",&student_info.contact);
+getchar();
+printf("\n\t\t\tBirthdate: ");
+gets(student_info.birthdaydDate);
+printf("\n\t\t\tPresent Address: ");
+gets(student_info.presentAdd);
+printf("\n\t\t\tPermanent Address: ");
+gets(student_info.permanentAdd);
+printf("\n\t\t\tUsername: ");
+gets(testUser);
+while(fread(&student_info.username,
+sizeof(student_info.username), 1, stu_data)==1){
+if(testUser==student_info.username) {
+check=1;
+system("cls");
+printf("\n\t\t\tUsername taken\n");
+goto retry;
+}
+else check=0;
+}
+if(check == 0) strcpy(student_info.username,testUser);
+printf("\n\t\t\tPassword(Must be 10 charecter): ");
+for(index=0;index<10;index++){
+testPass[index]=getch();
+printf("*");
+}
+printf("\n\t\t\tRetype Password: ");
+for(index=0;index<10;index++){
+retype_pass[index]=getch();
+printf("*");
+}
+printf("\nSignup Succcessfully");
+getch();
+welcome(student_info.username);
+if(strcmp(testPass, retype_pass)==0){
+strcpy(student_info.password, testPass);
+fwrite(&student_info, sizeof(student_info), 1, stu_data);
+fclose(stu_data);
+welcome(student_info.username);
+}
+}
+void student_login(){
+system("cls");
+int index, check=1;
+char testUser[20], testPass[10];
+stu_data=fopen("info.txt","rb");
+if(stu_data==NULL){
+printf("\n\t\t\tFile not found\n");
+exit(1);
+}
+printf("\n\t\t\tUsername: ");
+getchar();
+gets(testUser);
+printf("\n\t\t\tPassword(Must be 10 charecter): ");
+for(index=0;index<10;index++){
+testPass[index]=getch();
+printf("*");
+}
+while(fread(&student_info, sizeof(student_info), 1, stu_data)==1){
+if(testUser == student_info.username && testPass
+==student_info.password) {
+check=1;
+break;
+}
+else check=0;
+}
+if(check == 1){
+fclose(stu_data);
+welcome(testUser);
+}
+}
+void welcome(char user[20]){
+system ("cls");
+int c, semester;
+char id[20];
+FILE *infile;
+infile = fopen("info.txt","rb");
+if(infile==NULL){
+printf("\n\t\t\tFile not found\n");
+exit(1);
+}
+else{
+printf("\n\n\t\t\tSigned in as %s\n",user);
+printf ("\n\n\t\t\tWelcome! You have logged in
+successfully.\n");
+getch();
+}
+}
